@@ -131,13 +131,15 @@ function DisplayToastMessage(
 		titleDisable.disabled = true;
 		authorDisable.disabled = true;
 		isbnDisable.disabled = true;
-		setTimeout(function () {
+		return setTimeout(function () {
 			titleDisable.disabled = false;
 			authorDisable.disabled = false;
 			isbnDisable.disabled = false;
 			document.querySelector(".alert-msg").remove();
 		}, 2000);
+
 	}
+	
 
 	setTimeout(function () {
 		document.querySelector(".alert-msg").remove();
@@ -148,11 +150,4 @@ function DisplayToastMessage(
 document.getElementById("book-list").addEventListener("click", function (e) {
 	const ui = new UI();
 	ui.deleteBook(e.target);
-	// if ((e.target.className = "delete")) {
-	// 	e.target.parentElement.parentElement.remove();
-	// }
-	// errMsg = "Book Deleted";
-	// addErrorText(errMsg);
-
-	// DisplayToastMessage(text_color_green, background_color_lightGreen);
 });
