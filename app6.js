@@ -26,6 +26,7 @@ class UI {
 	}
 
 	deleteBook(target) {
+		console.log(target);
 		if ((target.className = "delete")) {
 			target.parentElement.parentElement.remove();
 		}
@@ -41,6 +42,64 @@ class UI {
 		document.getElementById("isbn").value = "";
 	}
 }
+
+// LocalStorage
+class Store {
+	static addBookToStorage(bookObj) {
+		let books;
+		if (localStorage.getItem("books") === null) {
+			books = [];
+		} else {
+			books = JSON.parse(localStorage.getItem("books"));
+		}
+
+		books.push(bookObj);
+		console.log("INSIDE");
+
+		return localStorage.setItem("books", JSON.stringify(books));
+	}
+
+	static displayBookFromStorage() {
+		let books;
+		if (localStorage.getItem("books") === null) {
+			books = [];
+		} else {
+			books = JSON.parse(localStorage.getItem("books"));
+		}
+		// console.log(books);
+
+		books.forEach(function (book) {
+			const ui = new UI();
+			return ui.addBookToList(book);
+		});
+	}
+
+	static deleteBookFromStorage(delBook) {
+		let books;
+		if (localStorage.getItem("books") === null) {
+			books = [];
+		} else {
+			books = JSON.parse(localStorage.getItem("books"));
+		}
+
+		books.forEach((element, index) => {
+			if (element.isbn === delBook) {
+				books.splice(index, 1);
+			}
+		});
+
+		localStorage.setItem("books", JSON.stringify(books));
+	}
+}
+
+// DOM event
+document.body.addEventListener(
+	"DOMContentLoaded",
+	Store.displayBookFromStorage()
+);
+
+// Store.displayBookFromStorage();
+
 // Add event listener
 document.getElementById("book-form").addEventListener("submit", function (e) {
 	const title = document.getElementById("title").value;
@@ -52,8 +111,8 @@ document.getElementById("book-form").addEventListener("submit", function (e) {
 	const isbnDisable = document.getElementById("isbn");
 
 	let errMsg;
-    const ui = new UI();
-    console.log(ui)
+	const ui = new UI();
+	console.log(ui);
 	// Validation
 	if (title === "" || author === "" || isbn === "") {
 		// ERROR MESSAGE
@@ -76,6 +135,7 @@ document.getElementById("book-form").addEventListener("submit", function (e) {
 		const book = new Book(title, author, isbn);
 
 		ui.addBookToList(book);
+		Store.addBookToStorage(book);
 
 		// Create Error text node
 		errMsg = "Book added successfuly";
@@ -146,5 +206,11 @@ function DisplayToastMessage(
 // Event for delete
 document.getElementById("book-list").addEventListener("click", function (e) {
 	const ui = new UI();
+	// delete from local Storage
+	// console.log(e.target.parentElement.previousElementSibling.textContent)
 	ui.deleteBook(e.target);
+
+	Store.deleteBookFromStorage(
+		e.target.parentElement.previousElementSibling.textContent
+	);
 });
